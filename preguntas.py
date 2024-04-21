@@ -12,249 +12,286 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+import csv
+from collections import defaultdict
+
+
+def load_data (file_csv):
+    data=[]
+    
+    with open(file_csv, newline='') as csvfile:
+        #read_csv = csv.reader(csvfile)
+        
+        for row in csvfile:
+            row = row.strip().replace('\t',' ').split(' ')
+            data.append(row)
+                
+    return data
+
+data=(load_data('data.csv'))
+
 
 def pregunta_01():
-    """
-    Retorne la suma de la segunda columna.
 
-    Rta/
-    214
+    data2=[]
+    cont=0
 
-    """
-    return
+    for element in data: 
+        if len(element)>=4:
+            data2.append(int(element[1]))
+
+    for element in data2:
+        cont+=element
+
+    return cont
+
+#Answer_1=print(pregunta_01(data))
 
 
 def pregunta_02():
-    """
-    Retorne la cantidad de registros por cada letra de la primera columna como la lista
-    de tuplas (letra, cantidad), ordendas alfabéticamente.
 
-    Rta/
-    [
-        ("A", 8),
-        ("B", 7),
-        ("C", 5),
-        ("D", 6),
-        ("E", 14),
-    ]
+    data1=[]         #Pone en lista sólo las letras necesarias
+    letters=[]       #Sólo pone una letra de cada una de las que aparece en data3
+    cont=[]          #Contiene la cantidad de veces que se repite cada letra en el mismo orden de la lista letters
 
-    """
-    return
+    for element in data: 
+        data1.append(element[0])
+    
+    for element in data1:
+        if element not in letters: 
+            letters.append(element)
+
+    letters=sorted(letters)    #Organiza las letras en orden alfabético
+
+    for element in letters: 
+        cont.append(data1.count(element))
+    
+    A2=list(zip(letters,cont))
+
+    return A2
+
+#Answer_2=print(pregunta_02(data))
 
 
 def pregunta_03():
-    """
-    Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
-    de tuplas (letra, suma) ordendas alfabeticamente.
+    
+    data1=[]  
+    data2=[]
+    sum=[]
 
-    Rta/
-    [
-        ("A", 53),
-        ("B", 36),
-        ("C", 27),
-        ("D", 31),
-        ("E", 67),
-    ]
+    for element in data: 
+        data1.append(element[0:2])
+        if element[0] not in data2:
+            data2.append(element[0])
+    
+    data2=sorted(data2)
+    
+    for element in data2:
+        cont=0
+        numbers=[tuple[1] for tuple in data1 if tuple[0]==element]
+        for element in numbers:
+            cont+=int(element)
+        sum.append(cont)
+    
+    A3=list(zip(data2,sum))
 
-    """
-    return
+    return A3
+
+#Answer_3=print(pregunta_03(data))
 
 
 def pregunta_04():
-    """
-    La columna 3 contiene una fecha en formato `YYYY-MM-DD`. Retorne la cantidad de
-    registros por cada mes, tal como se muestra a continuación.
+    
+    data1=[]      #Lista con todas las fechas completas
+    months=[]     #Lista con todos los meses
+    months2=[]    #Lista con los meses sólo una vez
+    cont=[]       #Lista con los conteos por mes
+    
+    for element in data: 
+        data1.append(element[2])
+    
+    for element in data1:
+        lista = list(element.split('-'))
+        months.append(lista[1])
 
-    Rta/
-    [
-        ("01", 3),
-        ("02", 4),
-        ("03", 2),
-        ("04", 4),
-        ("05", 3),
-        ("06", 3),
-        ("07", 5),
-        ("08", 6),
-        ("09", 3),
-        ("10", 2),
-        ("11", 2),
-        ("12", 3),
-    ]
+    for element in months:
+        if element not in months2:
+            months2.append(element)
+    
+    months2=sorted(months2)       #Lista organizada de menor a mayor 
 
-    """
-    return
+    for element in months2: 
+        cont.append(months.count(element))
+    
+    A4=list(zip(months2,cont))
+    
+    return A4
+
+#Answer_4=print(pregunta_04(data))
 
 
 def pregunta_05():
-    """
-    Retorne una lista de tuplas con el valor maximo y minimo de la columna 2 por cada
-    letra de la columa 1.
+    
+    data1=[]       #Datos con letra y número
+    data2=[]       #Sólo letra
+    minimum=[]     #Contiene todos los mínimos
+    maximum=[]     #Contiene todos los máximos
 
-    Rta/
-    [
-        ("A", 9, 2),
-        ("B", 9, 1),
-        ("C", 9, 0),
-        ("D", 8, 3),
-        ("E", 9, 1),
-    ]
+    for element in data: 
+        data1.append(element[0:2])
+        if element[0] not in data2:
+            data2.append(element[0])
+    
+    data2=sorted(data2)    #Letras organizadas alfabéticamente
+    
+    for element in data2:
+        numbers=[tuple[1] for tuple in data1 if tuple[0]==element]
+        minimum.append(int(min(numbers)))
+        maximum.append(int(max(numbers)))
+    
+    A5=list(zip(data2,maximum,minimum))
 
-    """
-    return
+    return A5
 
+#Answer_5=print(pregunta_05(data))
 
 def pregunta_06():
-    """
-    La columna 5 codifica un diccionario donde cada cadena de tres letras corresponde a
-    una clave y el valor despues del caracter `:` corresponde al valor asociado a la
-    clave. Por cada clave, obtenga el valor asociado mas pequeño y el valor asociado mas
-    grande computados sobre todo el archivo.
+    
+    data1=[]
+    dic={} 
+    results=[]
+    
+    for element in data: 
+        data1.append(element[-1].split(','))
 
-    Rta/
-    [
-        ("aaa", 1, 9),
-        ("bbb", 1, 9),
-        ("ccc", 1, 10),
-        ("ddd", 0, 9),
-        ("eee", 1, 7),
-        ("fff", 0, 9),
-        ("ggg", 3, 10),
-        ("hhh", 0, 9),
-        ("iii", 0, 9),
-        ("jjj", 5, 17),
-    ]
+    for element in data1:
+        for i in element:
+            key,value=i.split(':')       #Procesar cada par de clave y valor
+            value=int(value)
 
-    """
-    return
+            if key not in dic:
+                dic[key]={'min':value,'max':value}            #Si es la primera vez que se encuentra la clave
+            else:
+                dic[key]['min']=min(dic[key]['min'],value)    #Si la clave ya está, se actualiza el mínimo y el máximo
+                dic[key]['max']=max(dic[key]['max'],value)
+    
+    for key, values in sorted(dic.items()):                   #Para ordenar el elemento a imprimir
+        key=str(key)
+        minimum=values['min']
+        maximum=values['max']
+        A6='("{}", {}, {})'.format(key,minimum,maximum)
+              
+        results.append(eval(A6))
+
+    return results
+    
+#Answer_6=print(pregunta_06(data))
 
 
 def pregunta_07():
-    """
-    Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un
-    valor posible de la columna 2 y una lista con todas las letras asociadas (columna 1)
-    a dicho valor de la columna 2.
 
-    Rta/
-    [
-        (0, ["C"]),
-        (1, ["E", "B", "E"]),
-        (2, ["A", "E"]),
-        (3, ["A", "B", "D", "E", "E", "D"]),
-        (4, ["E", "B"]),
-        (5, ["B", "C", "D", "D", "E", "E", "E"]),
-        (6, ["C", "E", "A", "B"]),
-        (7, ["A", "C", "E", "D"]),
-        (8, ["E", "D", "E", "A", "B"]),
-        (9, ["A", "B", "E", "A", "A", "C"]),
-    ]
+    letters_values=defaultdict(list)      #Almacena las listas de letras por cada valor de la columna 1
 
-    """
-    return
+    for element in data: 
+        letters=element[0]
+        numbers=int(element[1])
+        letters_values[numbers].append(letters)
+    
+    A7=sorted(letters_values.items())     #Ordena los elementos de la lista de acuerdo al valor de la columna 1.
+    return A7
+    
+#Answer_7=print(pregunta_07(data))
 
 
 def pregunta_08():
-    """
-    Genere una lista de tuplas, donde el primer elemento de cada tupla contiene  el valor
-    de la segunda columna; la segunda parte de la tupla es una lista con las letras
-    (ordenadas y sin repetir letra) de la primera  columna que aparecen asociadas a dicho
-    valor de la segunda columna.
 
-    Rta/
-    [
-        (0, ["C"]),
-        (1, ["B", "E"]),
-        (2, ["A", "E"]),
-        (3, ["A", "B", "D", "E"]),
-        (4, ["B", "E"]),
-        (5, ["B", "C", "D", "E"]),
-        (6, ["A", "B", "C", "E"]),
-        (7, ["A", "C", "D", "E"]),
-        (8, ["A", "B", "D", "E"]),
-        (9, ["A", "B", "C", "E"]),
-    ]
+    letters_values=defaultdict(set)     
 
-    """
-    return
+    for element in data: 
+        letters=element[0]
+        numbers=int(element[1])
+        letters_values[numbers].add (letters)
+    
+    A8=sorted ((numbers, sorted(letters)) for numbers, letters in letters_values.items())     #Convierte los conjuntos de letras en listas ordenadas y sin duplicados
+    return A8
+
+#Answer_8=print(pregunta_08(data))
 
 
 def pregunta_09():
-    """
-    Retorne un diccionario que contenga la cantidad de registros en que aparece cada
-    clave de la columna 5.
 
-    Rta/
-    {
-        "aaa": 13,
-        "bbb": 16,
-        "ccc": 23,
-        "ddd": 23,
-        "eee": 15,
-        "fff": 20,
-        "ggg": 13,
-        "hhh": 16,
-        "iii": 18,
-        "jjj": 18,
-    }
+    keys_count=defaultdict(int)
 
-    """
-    return
+    for element in data:
+            text=element[-1]
+            couple=text.split(',')
 
+            for i in couple:
+                key, _ = i.split(':')
+                keys_count[key] += 1
+    
+    A9=dict(keys_count)
+    A9=dict(sorted(A9.items()))
+
+    return A9
+
+#Answer_9=print(pregunta_09(data))
+    
 
 def pregunta_10():
-    """
-    Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la
-    cantidad de elementos de las columnas 4 y 5.
+    
+    data1=[]
 
-    Rta/
-    [
-        ("E", 3, 5),
-        ("A", 3, 4),
-        ("B", 4, 4),
-        ...
-        ("C", 4, 3),
-        ("E", 2, 3),
-        ("E", 3, 3),
-    ]
+    for element in data:
+        letter=element[0]
+        count_col3=len(element[3].split(','))
+        count_col4=len(element[4].split(','))
 
+        A10='("{}", {}, {})'.format(letter,count_col3,count_col4)
+        data1.append(eval(A10))
 
-    """
-    return
+    return data1
+
+#Answer_10=print(pregunta_10(data))
 
 
 def pregunta_11():
-    """
-    Retorne un diccionario que contengan la suma de la columna 2 para cada letra de la
-    columna 4, ordenadas alfabeticamente.
+    
+    summation=defaultdict(int)             #Diccionario para acumular las sumas por cada letra de la columna 4. 
 
-    Rta/
-    {
-        "a": 122,
-        "b": 49,
-        "c": 91,
-        "d": 73,
-        "e": 86,
-        "f": 134,
-        "g": 35,
-    }
+    for element in data:
+        number=int(element[1])
+        letters=element[3].split(',')
 
+        for i in letters:
+            summation[i]+=number
+    
+    A11=dict(sorted(summation.items()))   #Ordena alfabéticamente las letras de la columna 4.
+    
+    return A11
 
-    """
-    return
+#Answer_11=print(pregunta_11(data))
 
 
 def pregunta_12():
-    """
-    Genere un diccionario que contengan como clave la columna 1 y como valor la suma de
-    los valores de la columna 5 sobre todo el archivo.
 
-    Rta/
-    {
-        'A': 177,
-        'B': 187,
-        'C': 114,
-        'D': 136,
-        'E': 324
-    }
+    summ_key={}
 
-    """
-    return
+    for element in data:
+        letter=element[0]
+        couple=element[-1].split(',')
+
+        for i in couple:
+            key,value = i.split(':')
+            value=int(value)
+            
+            if letter in summ_key:
+                summ_key[letter]+=value
+            else:
+                summ_key[letter]=value
+    
+    A12=dict(sorted(summ_key.items()))   #Ordena alfabéticamente las letras de la columna 1.
+   
+    return A12
+
+#Answer_12=print(pregunta_12(data))
